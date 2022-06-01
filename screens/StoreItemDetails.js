@@ -1,7 +1,7 @@
 import React from 'react'
 import { View,Text,Image} from 'react-native';
 import { Button } from 'react-native-paper';
-
+import imgDown from './ImageDown';
 
 export default function StoreItemDetails(props) {
     const items = props?.route?.params?.data;
@@ -13,6 +13,9 @@ export default function StoreItemDetails(props) {
       );
   }
 
+
+
+
   return (
    
          <View style={{alignItems:'center',flex:1,margin:30}}>
@@ -20,10 +23,13 @@ export default function StoreItemDetails(props) {
                             height:175,
                             alignSelf:'center',}} source={{uri:items.image_url}}
              />
+             <Button onPress={()=>imgDown(items.image_url)}>
+                 Download
+             </Button>
              <Text style={{fontSize:30,color:'#111111'}}>{items.name}</Text>
              <Text style={{fontSize:20,margin:20}}>
               
-              <Text>{items.description}</Text>
+              <Text style={{color:'black'}}>{items.description}</Text>
                          
             </Text>
             {price(items.price,items.discounted_price)?
@@ -36,7 +42,6 @@ export default function StoreItemDetails(props) {
             }
            <Button onPress={props.navigation.goBack}> Back </Button>
         </View>
- 
-     
+
   ); 
 }

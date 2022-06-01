@@ -80,7 +80,7 @@ export default function Anime() {
         </ActivityIndicator> :
         
         <ScrollView>
-            <TextInput style={{borderWidth:2,margin:5,padding:10,width:300,alignSelf:"center"}} placeholder='Search' placeholderTextColor={"#999999"} />
+            
             <View style={{flexDirection:"row",flexWrap:"wrap",justifyContent:"space-evenly"}}>
             {apiData?.data?.map(data =>{
                 return (

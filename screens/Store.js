@@ -16,12 +16,15 @@ import {
 import axios from 'axios';
 import {ActivityIndicator} from 'react-native-paper';
 import FruitShop from '../Images/FruitShop.png';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function Store(props) {
   const [input, setInput] = useState('');
   const [apiData, setApiData] = useState([]);
   const [loading, setLoading] = useState(false);
   var url = 'https://api.dotshowroom.in/api/dotk/catalog/searchItems';
+
+
 
   const handleChange = text => {
     setLoading(true);
@@ -187,10 +190,10 @@ const css = StyleSheet.create({
     height: 40,
     marginRight: '4%',
     borderRadius: 5,
-    paddingLeft:10
+    paddingLeft:10,
+    color:'black'
   },
-  cartLogo: {},
-  productWarp: {},
+
   producetItemsWrap: {
     flex: 1,
     flexDirection: 'row',

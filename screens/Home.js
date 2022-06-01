@@ -9,48 +9,68 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ImageBackground,
-  StatusBar
+  StatusBar,
+  Button
 } from 'react-native';
 import Anime from '../Images/Anime.jpeg'
 import Crypto from '../Images/Crypto.jpeg'
 import fruits from '../Images/fruits.jpeg'
+import NetInfo,{useNetInfo} from "@react-native-community/netinfo";
 
 export default function Home(props) {
+
+
+  const netInfo = useNetInfo();
   
 
+  function internet(){
+  
+    alert(`Type: ${netInfo.type} \n Is Connected? ${netInfo.isConnected?.toString()}`)
+  
+}
+
   return (
-    <SafeAreaView style={styles.body}>
+   <SafeAreaView style={styles.body}>
       <StatusBar backgroundColor={'#999'}  barStyle={'default'}/>
       <Text style={styles.bodyText}> List of API's</Text>
       <ScrollView>
 
       <TouchableOpacity onPress={() => props.navigation.navigate('Anime')} style={styles.animeNames}>
-       <ImageBackground source={Anime} style={styles.backgroundImage} resizeMode={'cover'} blurRadius={1}> 
+       <ImageBackground source={Anime} style={styles.backgroundImage} resizeMode={'cover'} blurRadius={2}> 
        <Text style={styles.listName}>Anime</Text>
        </ImageBackground>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => props.navigation.navigate('Cryptocurrency')} style={styles.animeNames}>
-        <ImageBackground source={Crypto} style={styles.backgroundImage} resizeMode={'cover'} blurRadius={1}>
+        <ImageBackground source={Crypto} style={styles.backgroundImage} resizeMode={'cover'} blurRadius={2}>
         <Text style={styles.listName}>Cryptocurrency</Text>
         </ImageBackground>
       </TouchableOpacity>
       
       <TouchableOpacity onPress={() => props.navigation.navigate('Store')} style={styles.animeNames}>
-      <ImageBackground source={fruits} style={styles.backgroundImage} resizeMode={'cover'} blurRadius={1}>
+      <ImageBackground source={fruits} style={styles.backgroundImage} resizeMode={'cover'} blurRadius={2}>
       <Text style={styles.listName}>Store</Text>
       </ImageBackground>
       </TouchableOpacity>
+      <Button title='Check' onPress={()=>internet()} >
+        
+      </Button>
+      
 
       </ScrollView>
     </SafeAreaView>
+  
+  
+  
+    
   );
 }
 
 const styles = StyleSheet.create({
   body: {
     margin: 10,
-    flex:1
+    flex:1,
+   
   },
   bodyText: {
     alignSelf: 'center',
