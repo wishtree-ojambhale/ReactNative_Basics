@@ -1,6 +1,7 @@
 import React,{useEffect,useState} from 'react'
 import {View,Text,ActivityIndicator,ScrollView,Image,TextInput,TouchableOpacity,Linking,alertMessage} from 'react-native';
 import axios from 'axios';
+import style from '../Components/styles';
 
 export default function Anime() {
 
@@ -74,7 +75,7 @@ export default function Anime() {
   return (
     <View>
         
-        <Text style={{margin:10,alignSelf:'center',fontSize:30,color:'#000'}}>Anime</Text>
+        <Text style={style.animeHeader}>Anime</Text>
         {loading? <ActivityIndicator size={50} style={{marginTop:250}}>
 
         </ActivityIndicator> :
