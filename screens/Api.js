@@ -61,6 +61,9 @@ export default function Eapp(props) {
         </View>
         { loading? <ActivityIndicator size="large" style={style.loading}/> :
         <ScrollView showsVerticalScrollIndicator={false}>
+          {/* <View>
+            
+          </View> */}
           {apiData?.store_items?.map((item, i) => {
             return (
               <View key={i}>

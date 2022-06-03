@@ -1,10 +1,6 @@
 import {
-  StyleSheet,
-  Text,
   Alert,
-  TouchableOpacity,
   PermissionsAndroid,
-  Image,
   Platform,
   Linking
 } from 'react-native';
@@ -12,7 +8,6 @@ import {
 //for the file download
 import RNFetchBlob from 'rn-fetch-blob';
  
-    
 
     function imgDown(path){
         console.log(path)
@@ -34,14 +29,45 @@ import RNFetchBlob from 'rn-fetch-blob';
             const granted = await PermissionsAndroid.request(
               PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
             );
-            if (granted ===  PermissionsAndroid.RESULTS.GRANTED)  {
+            // switch(granted){
+            //   case 'granted':{
+            //     console.log(`If permission is granted :${granted}`);
+            //     alert("Done");
+            //     //Once user grant the permission start downloading
+            //     downloadImage(path);
+            //     break;
+            //   }
+
+            //   case 'never_ask_again':{
+            //     console.log(`If permission is not granted :${granted}`);
+            //   Alert.alert(
+            //     'Permission Request',
+            //     'Please allow Media permission to download the Image',
+            //     [
+            //       {
+            //         text: 'Go to Settings',
+            //         onPress: () => {
+            //           Linking.openSettings();
+            //         },
+            //       },
+            //       {
+            //         text: 'Cancel',
+            //         style: 'cancel',
+            //       },
+            //     ],
+            //     { cancelable: false },
+            //   );
+            //   break;
+            //   }
+            // }
+            if (granted ==  PermissionsAndroid.RESULTS.GRANTED)  {
               console.log(`If permission is granted :${granted}`);
               alert("Done");
               //Once user grant the permission start downloading
               downloadImage(path);
             }
-           if(granted !=  PermissionsAndroid.RESULTS.GRANTED ){
-            console.log(`If permission if not granted :${granted}`);
+           if ( granted ==  PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN){
+            console.log(`If permission is not granted :${granted}`);
               Alert.alert(
                 'Permission Request',
                 'Please allow Media permission to download the Image',
