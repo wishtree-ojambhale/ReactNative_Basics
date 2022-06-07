@@ -11,6 +11,7 @@ import StoreItemDetails from './screens/StoreItemDetails';
 import Eapp from './screens/Api';
 import Details from './screens/ItemDetails';
 import { LogBox } from 'react-native';
+import Camera from './Permissions/camera';
 
 const Stack = createNativeStackNavigator();
 LogBox.ignoreAllLogs();
@@ -29,6 +30,7 @@ const App= () => {
         <Stack.Screen name='StoreItemDetails' component={StoreItemDetails} />  
         <Stack.Screen name='Eapp' component={Eapp} />  
         <Stack.Screen name='Details' component={Details} />  
+        <Stack.Screen name='camera' component={Camera} />  
 
       </Stack.Navigator>
     </NavigationContainer>

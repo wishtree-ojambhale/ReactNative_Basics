@@ -4,6 +4,7 @@ import {
   Platform,
   Linking
 } from 'react-native';
+
  
 //for the file download
 import RNFetchBlob from 'rn-fetch-blob';
@@ -16,10 +17,11 @@ import RNFetchBlob from 'rn-fetch-blob';
     
     const checkPermission = async (path) => {
   
+
         //Function to check the platform
         //If iOS then start downloading
-        //If Android then ask for permission
-     
+        //If Android then ask for permission 
+
         if (Platform.OS === 'ios') {
             console.log(path);
           downloadImage(path);
@@ -66,8 +68,8 @@ import RNFetchBlob from 'rn-fetch-blob';
               //Once user grant the permission start downloading
               downloadImage(path);
             }
-           if ( granted ==  PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN){
-            console.log(`If permission is not granted :${granted}`);
+            if ( granted ==  PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN){     
+              console.log(`If permission is not granted :${granted}`);
               Alert.alert(
                 'Permission Request',
                 'Please allow Media permission to download the Image',
@@ -90,7 +92,9 @@ import RNFetchBlob from 'rn-fetch-blob';
             //To handle permission related exception
             console.warn(err);
           }
+
         }
+      
       };
       
 
@@ -143,4 +147,7 @@ import RNFetchBlob from 'rn-fetch-blob';
              /[^.]+$/.exec(filename) : undefined;
   };
 
+
+  
+ 
 export default imgDown;
