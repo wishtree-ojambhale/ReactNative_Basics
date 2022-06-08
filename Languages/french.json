@@ -1,0 +1,9 @@
+{
+    "translation":{
+        "welcomeText":"Bienvenue dans l'espace",
+        "language":"Sélectionnez la langue",
+        "address":"Adresse",
+        "age":"âge",
+        "name":"Nom"
+    }
+}
