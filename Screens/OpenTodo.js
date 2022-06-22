@@ -1,57 +1,70 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, Alert, StyleSheet, Keyboard, Pressable} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import LinearGradient from 'react-native-linear-gradient';
+import {View, Text, Alert, ActivityIndicator,Pressable} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {TextInput, Button} from 'react-native-paper';
-import DatePicker from 'react-native-date-picker';
 import {openDatabase} from 'react-native-sqlite-storage';
-import Insert from './Database/Insert_Data';
+import LinearGradient from 'react-native-linear-gradient';
+import Update from './Database/update_data';
+import DatePicker from 'react-native-date-picker';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {Dropdown} from 'react-native-element-dropdown';
 import css from '../styles/dropdown_css';
-import button from '../styles/button_css';
+import textInput from '../styles/textinput._css';
 import Mytextinput from './components/Mytextinput';
+import button from '../styles/button_css';
 
 var db = openDatabase({name: 'UserDatabase1.db'});
 
-const AddTask = props => {
-  const [title, setTitle] = useState();
-  const [task, setTask] = useState();
+const OpenTodo = props => {
+  const task = props?.route?.params?.data.task;
+  const title1 = props?.route?.params.data.title;
+  const id1 = props?.route?.params?.data.id;
+  const category1 = props?.route?.params?.data.category;
+  const selectedColor=props?.route?.params?.data.color;
+  const [selectedDate, setSelectedDate] = useState(
+    props?.route?.params?.data.date,
+  );
+  
+  const [tasks, setTask] = useState(task);
+  const [title, setTitle] = useState(title1);
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isFocusCateg, setIsFocusCateg] = useState(false);
+  const [cate, setCate] = useState();
+  const [categLabel, setCategLabel] = useState(category1);
+  // const [isFocus, setIsFocus] = useState(false);
+  const [value, setValue] = useState(selectedColor);
+
   const [day, setDay] = useState();
   const [month, setMonth] = useState();
   const [year, setYear] = useState();
   const [hour, setHour] = useState();
   const [min, setMin] = useState();
-  const [cate, setCate] = useState();
-  const [categLabel, setCategLabel] = useState();
-  const [isFocusCateg, setIsFocusCateg] = useState(false);
-  const [list, setList] = useState([]);
   const [flag, setFlag] = useState(false);
 
   useEffect(() => {
+    dataLoading();
     loading
       ? setSelectedDate(month + '/' + day + '/' + year + ' ' + hour + ':' + min)
       : null;
+
   });
 
-  var categList = [{label: 'Work', value: 'skyblue'}];
-
-  function dataLoading() {
-    db.transaction(tx => {
-      tx.executeSql('SELECT * FROM table_category', [], (tx, results) => {
-        for (let i = 0; i < results.rows.length; ++i) {
-         // console.log('running');
-          categList.push({
-            label: results.rows.item(i).user_category,
-            value: results.rows.item(i).user_color,
-          });
-        }
-        setList(categList);
-      });
-    });
+  function validation(){
+    if(title==undefined || title=="" || task==undefined || task=="" || categLabel==undefined || month==undefined){
+      setFlag(true);
+    }
+    else{
+      Update({
+        id: id1,
+        task: tasks,
+        title: title,
+        category:categLabel,
+        date: day==undefined ? selectedDate:  month + '/' + day + '/' + year + ' ' + hour + ':' + min,
+        color:value
+      }),
+        props.navigation.navigate('Todo');
+    }
   }
 
   function loader() {
@@ -60,29 +73,34 @@ const AddTask = props => {
       setLoading(false);
     }, 2000);
   }
-
-  function validation(){
-    if(title==undefined || title=="" || task==undefined || task=="" || categLabel==undefined || month==undefined){
-      setFlag(true);
-    }
-    else{
-      Insert(
-        {
-          title: title,
-          task: task,
-          color: cate,
-          category: categLabel,
-          date: month + '/' + day + '/' + year + ' ' + hour + ':' + min,
-        });
-        props.navigation.navigate('Todo');
-    }
+  var categList = [{label:'Work',value:'skyblue'}];
+  const [list,setList] = useState([]);
+ 
+  function dataLoading(){
+    db.transaction(tx => {
+      tx.executeSql('SELECT * FROM table_category', [], (tx, results) => {
+        for (let i = 0; i < results.rows.length; ++i) {
+         
+          categList.push({label:results.rows.item(i).user_category,value:results.rows.item(i).user_color})
+          }
+          setList(categList);
+      });
+    });
   }
 
+
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={{flex: 1}}>
       <LinearGradient
-        colors={['#2F3C4F', '#506F86', '#2F3C4F']}
+        colors={['#2F3C4F', '#506F86', '#FBB040']}
         style={{flex: 1}}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Button color="#FBB040" onPress={() => props.navigation.goBack()}>
+            <Icon name="arrow-left" size={20} color="#FBB040" />
+          </Button>
+          <View style={{flexDirection: 'row-reverse'}}>
+          </View>
+        </View>
         <View style={{padding: 5}}>
           <Text
             style={{
@@ -91,7 +109,7 @@ const AddTask = props => {
               fontWeight: '700',
               alignSelf: 'center',
             }}>
-            Add Task
+            Edit Task
           </Text>
         </View>
         <View
@@ -105,17 +123,16 @@ const AddTask = props => {
           <Mytextinput
             label="Title"
             value={title}
-            onChangeText={title => [setTitle(title)]}
+            onChangeText={text => setTitle(text)}
           />
           {flag&!title? <Text style={{color:'red'}}>Please enter the title </Text>:<></>}
-          <Mytextinput
-            label="Task"
-            value={task}
-            onChangeText={task => [setTask(task)]} 
-            
+          <Mytextinput 
+          label="Task"
+          value={task}
+          onChangeText={text => setTask(text)}
           />
           {flag&!task? <Text style={{color:'red'}}>Please enter task </Text> :<></>}
-          <Dropdown
+        <Dropdown
             style={[css.dropdown, isFocusCateg && {borderColor: '#FBB040'}]}
             placeholderStyle={css.placeholderStyle}
             selectedTextStyle={{color: 'black'}}
@@ -126,43 +143,39 @@ const AddTask = props => {
             maxHeight={300}
             labelField="label"
             valueField="value"
-            placeholder={!isFocusCateg ? 'Select Category' : 'Select Category'}
-           // searchPlaceholder="Search..."
+            placeholder={!isFocusCateg ? category1 : 'Select Category'}
+            //searchPlaceholder="Search..."
             value={cate}
-            onFocus={() => [setIsFocusCateg(true), dataLoading()]}
+            onFocus={() => setIsFocusCateg(true)}
             onBlur={() => setIsFocusCateg(false)}
             onChange={item => {
               setCate(item.value);
               setCategLabel(item.label);
               setIsFocusCateg(false);
             }}
-          />
-           {flag&!categLabel? <Text style={{color:'red'}}>Please select category </Text> :<></>}
-          <Pressable onPress={() => setOpen(true)}>
+          /> 
+          {flag&!categLabel? <Text style={{color:'red'}}>Please select category </Text> :<></>}
+            <Pressable onPress={()=>setOpen(true)}>
             <TextInput
               style={{padding: 10, height: 30, paddingLeft: 0}}
               label="Date and Time"
+              defaultValue={selectedDate}
               value={selectedDate}
-              // onPressIn={()=>setOpen(true)}
               editable={false}
               mode="outlined"
               outlineColor="#FBB040"
-              activeUnderlineColor="#FBB040"
               activeOutlineColor="#506F86"
-              onMagicTap={() => setOpen(true)}
             />
-          </Pressable>
+            </Pressable>
           <DatePicker
             modal
-            minimumDate={new Date()}
-            is24hourSource="device"
             timeZoneOffsetInMinutes={+5 * 60 + 30}
             open={open}
             date={date}
             onConfirm={date => {
+              loader();
               setOpen(false);
               setDate(date);
-              console.log(date);
               setDay(
                 date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
               );
@@ -180,29 +193,28 @@ const AddTask = props => {
                   ? '0' + date.getMinutes()
                   : date.getMinutes(),
               );
-              loader();
+              
             }}
             onCancel={() => {
               setOpen(false);
             }}
           />
-          {flag&!month? <Text style={{color:'red'}}>Please select date time </Text> :<></>}
-          {/* <Button mode='contained' onPress={() => console.log(day+'/'+month+'/'+year+' '+hour+':'+min)}>print</Button> */}
-
-          <Button
+           {flag&!selectedDate? <Text style={{color:'red'}}>Please select date time </Text> :<></>}
+            <Button
             mode="contained"
             color="#506F86"
-            style={button.layout}
             labelStyle={button.label}
-            onPress={() =>
-            validation()
-            }>
-            Add
+            style={button.layout}
+            icon="update"
+              onPress={() => {
+                validation()
+              }}>
+            Update
           </Button>
         </View>
       </LinearGradient>
-    </SafeAreaView>
+    </View>
   );
 };
-export default AddTask;
 
+export default OpenTodo;
