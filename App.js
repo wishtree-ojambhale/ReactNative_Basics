@@ -5,9 +5,9 @@ import {
 } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import  {NavigationContainer, StackActions} from '@react-navigation/native';
-import Todo from './Screens/Todo'
+import Todo from './Screens/Todo_display'
 import AddTask from './Screens/AddTask';
-import OpenTodo from './Screens/OpenTodo';
+import OpenTodo from './Screens/Todo_edit';
 import Category from './Screens/Category';
 import { openDatabase } from 'react-native-sqlite-storage';
 
