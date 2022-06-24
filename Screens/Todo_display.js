@@ -41,7 +41,7 @@ const Todo = props => {
         key={item.user_id}
         style={[homeCss.note, {backgroundColor: item.user_color}]}>
         <View flex={1}>
-          <Text style={homeCss.titleText}>{item.user_title}</Text>
+          <Text numberOfLines={1} style={homeCss.titleText}>{item.user_title}</Text>
           {item.user_category ? (
             <Text style={homeCss.category}>Category: {item.user_category}</Text>
           ) : (
