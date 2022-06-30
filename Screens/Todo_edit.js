@@ -1,4 +1,4 @@
-import {View, Text, Alert, ActivityIndicator,Pressable} from 'react-native';
+import {View, Text, Pressable} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {TextInput, Button} from 'react-native-paper';
 import {openDatabase} from 'react-native-sqlite-storage';
@@ -8,9 +8,8 @@ import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Dropdown} from 'react-native-element-dropdown';
 import css from '../styles/dropdown_css';
-import textInput from '../styles/textinput._css';
 import Mytextinput from './components/Mytextinput';
-import button from '../styles/button_css';
+import {button} from '../styles/button_css';
 
 var db = openDatabase({name: 'UserDatabase1.db'});
 
@@ -19,11 +18,10 @@ const OpenTodo = props => {
   const title1 = props?.route?.params.data.title;
   const id1 = props?.route?.params?.data.id;
   const category1 = props?.route?.params?.data.category;
-  const selectedColor=props?.route?.params?.data.color;
+  const selectedColor = props?.route?.params?.data.color;
   const [selectedDate, setSelectedDate] = useState(
     props?.route?.params?.data.date,
   );
-  
   const [tasks, setTask] = useState(task);
   const [title, setTitle] = useState(title1);
   const [date, setDate] = useState(new Date());
@@ -33,7 +31,7 @@ const OpenTodo = props => {
   const [cate, setCate] = useState();
   const [categLabel, setCategLabel] = useState(category1);
   // const [isFocus, setIsFocus] = useState(false);
-  const [value, setValue] = useState(selectedColor);
+  const [value] = useState(selectedColor);
 
   const [day, setDay] = useState();
   const [month, setMonth] = useState();
@@ -47,21 +45,29 @@ const OpenTodo = props => {
     loading
       ? setSelectedDate(month + '/' + day + '/' + year + ' ' + hour + ':' + min)
       : null;
+  }, [loading, month, day, year, hour, min, dataLoading]);
 
-  });
-
-  function validation(){
-    if(title==undefined || title=="" || task==undefined || task=="" || categLabel==undefined || month==undefined){
+  function validation() {
+    if (
+      title === undefined ||
+      title === '' ||
+      task === undefined ||
+      task === '' ||
+      categLabel === undefined
+    ) {
       setFlag(true);
-    }
-    else{
+    } else {
+      console.log('Validation');
       Update({
         id: id1,
         task: tasks,
         title: title,
-        category:categLabel,
-        date: day==undefined ? selectedDate:  month + '/' + day + '/' + year + ' ' + hour + ':' + min,
-        color:value
+        category: categLabel,
+        date:
+          day === undefined
+            ? selectedDate
+            : month + '/' + day + '/' + year + ' ' + hour + ':' + min,
+        color: value,
       }),
         props.navigation.navigate('Todo');
     }
@@ -73,21 +79,22 @@ const OpenTodo = props => {
       setLoading(false);
     }, 2000);
   }
-  var categList = [{label:'Work',value:'skyblue'}];
-  const [list,setList] = useState([]);
- 
-  function dataLoading(){
+  var categList = [{label: 'Work', value: 'skyblue'}];
+  const [list, setList] = useState([]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  function dataLoading() {
     db.transaction(tx => {
-      tx.executeSql('SELECT * FROM table_category', [], (tx, results) => {
+      tx.executeSql('SELECT * FROM table_category', [], (_tx, results) => {
         for (let i = 0; i < results.rows.length; ++i) {
-         
-          categList.push({label:results.rows.item(i).user_category,value:results.rows.item(i).user_color})
-          }
-          setList(categList);
+          categList.push({
+            label: results.rows.item(i).user_category,
+            value: results.rows.item(i).user_color,
+          });
+        }
+        setList(categList);
       });
     });
   }
-
 
   return (
     <View style={{flex: 1}}>
@@ -98,8 +105,7 @@ const OpenTodo = props => {
           <Button color="#FBB040" onPress={() => props.navigation.goBack()}>
             <Icon name="arrow-left" size={20} color="#FBB040" />
           </Button>
-          <View style={{flexDirection: 'row-reverse'}}>
-          </View>
+          <View style={{flexDirection: 'row-reverse'}}></View>
         </View>
         <View style={{padding: 5}}>
           <Text
@@ -125,14 +131,22 @@ const OpenTodo = props => {
             value={title}
             onChangeText={text => setTitle(text)}
           />
-          {flag&!title? <Text style={{color:'red'}}>Please enter the title </Text>:<></>}
-          <Mytextinput 
-          label="Task"
-          value={task}
-          onChangeText={text => setTask(text)}
+          {flag & !title ? (
+            <Text style={{color: 'red'}}>Please enter the title </Text>
+          ) : (
+            <></>
+          )}
+          <Mytextinput
+            label="Task"
+            value={tasks}
+            onChangeText={text => setTask(text)}
           />
-          {flag&!task? <Text style={{color:'red'}}>Please enter task </Text> :<></>}
-        <Dropdown
+          {flag & !task ? (
+            <Text style={{color: 'red'}}>Please enter task </Text>
+          ) : (
+            <></>
+          )}
+          <Dropdown
             style={[css.dropdown, isFocusCateg && {borderColor: '#FBB040'}]}
             placeholderStyle={css.placeholderStyle}
             selectedTextStyle={{color: 'black'}}
@@ -153,9 +167,13 @@ const OpenTodo = props => {
               setCategLabel(item.label);
               setIsFocusCateg(false);
             }}
-          /> 
-          {flag&!categLabel? <Text style={{color:'red'}}>Please select category </Text> :<></>}
-            <Pressable onPress={()=>setOpen(true)}>
+          />
+          {flag & !categLabel ? (
+            <Text style={{color: 'red'}}>Please select category </Text>
+          ) : (
+            <></>
+          )}
+          <Pressable onPress={() => setOpen(true)}>
             <TextInput
               style={{padding: 10, height: 30, paddingLeft: 0}}
               label="Date and Time"
@@ -166,7 +184,7 @@ const OpenTodo = props => {
               outlineColor="#FBB040"
               activeOutlineColor="#506F86"
             />
-            </Pressable>
+          </Pressable>
           <DatePicker
             modal
             timeZoneOffsetInMinutes={+5 * 60 + 30}
@@ -193,22 +211,25 @@ const OpenTodo = props => {
                   ? '0' + date.getMinutes()
                   : date.getMinutes(),
               );
-              
             }}
             onCancel={() => {
               setOpen(false);
             }}
           />
-           {flag&!selectedDate? <Text style={{color:'red'}}>Please select date time </Text> :<></>}
-            <Button
+          {flag & !selectedDate ? (
+            <Text style={{color: 'red'}}>Please select date time </Text>
+          ) : (
+            <></>
+          )}
+          <Button
             mode="contained"
             color="#506F86"
             labelStyle={button.label}
             style={button.layout}
             icon="update"
-              onPress={() => {
-                validation()
-              }}>
+            onPress={() => {
+              validation();
+            }}>
             Update
           </Button>
         </View>

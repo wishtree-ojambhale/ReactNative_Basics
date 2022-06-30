@@ -1,14 +1,13 @@
-import { StyleSheet } from "react-native";
+import {StyleSheet} from 'react-native';
 
 const css = StyleSheet.create({
-
-dropdown: {
+  dropdown: {
     marginVertical: 5,
     height: 54,
     borderColor: 'gray',
     borderWidth: 0.5,
     borderRadius: 5,
-    padding:10,
+    padding: 10,
     backgroundColor: 'white',
   },
   placeholderStyle: {
@@ -19,12 +18,11 @@ dropdown: {
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
-  },  
+  },
   iconStyle: {
     width: 20,
     height: 20,
   },
-
-})
+});
 
 export default css;

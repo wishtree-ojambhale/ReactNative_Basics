@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, Alert, StyleSheet, Keyboard, Pressable} from 'react-native';
+import React, {useState} from 'react';
+import {View, Text} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import {Button} from 'react-native-paper';
@@ -8,49 +8,44 @@ import {Dropdown} from 'react-native-element-dropdown';
 import Color_Array from '../Screens/components/Color_Array';
 import css from '../styles/dropdown_css';
 import Mytextinput from './components/Mytextinput';
-import button from '../styles/button_css';
+import {button} from '../styles/button_css';
 
 var db = openDatabase({name: 'UserDatabase1.db'});
 
 const Category = props => {
   const [categoryName, setCategoryName] = useState();
-  const [loading, setLoading] = useState(false);
   const [value, setValue] = useState();
   const [isFocus, setIsFocus] = useState(false);
+  const [flag, setFlag] = useState(false);
 
-  // function clearCateg() {
+  // const clearCateg = () => {
   //   db.transaction(function (tx) {
   //     tx.executeSql('DROP TABLE table_category');
   //   });
-  // }
+  // };
 
-  function insert() {
-    db.transaction(function (tx) {
-      tx.executeSql(
-        'INSERT INTO table_category (user_category, user_color) VALUES (?,?)',
-        [categoryName, value],
-        (tx, results) => {
-          if (results.rowsAffected > 0) {
-            console.log('Success', 'Note added');
-          
-          } else console.log('Registration Failed');
-        },
-      );
-    });
-  }
-  useEffect(() => {
-    loading
-      ? setSelectedDate(month + '/' + day + '/' + year + ' ' + hour + ':' + min)
-      : null;
-  });
-
-  function validate(){
-    if(categoryName==null){
-      
+  function validate() {
+    if (
+      categoryName === undefined ||
+      categoryName === '' ||
+      value === undefined ||
+      value === ''
+    ) {
+      setFlag(true);
+    } else {
+      db.transaction(function (tx) {
+        tx.executeSql(
+          'INSERT INTO table_category (user_category, user_color) VALUES (?,?)',
+          [categoryName, value],
+          (tx, results) => {
+            if (results.rowsAffected > 0) {
+              console.log('Success', 'Note added');
+            } else console.log('Registration Failed');
+          },
+        );
+      });
+      props.navigation.navigate('Todo');
     }
-
-
-
   }
 
   return (
@@ -77,13 +72,16 @@ const Category = props => {
             borderColor: '#FBB040',
             flexDirection: 'column',
           }}>
-    
           <Mytextinput
             label="Category"
             value={categoryName}
             onChangeText={name => setCategoryName(name)}
           />
-        
+          {flag & !categoryName ? (
+            <Text style={{color: 'red'}}>Please enter the Category </Text>
+          ) : (
+            <></>
+          )}
           <Dropdown
             style={[css.dropdown, isFocus && {borderColor: '#FBB040'}]}
             placeholderStyle={css.placeholderStyle}
@@ -106,14 +104,17 @@ const Category = props => {
               setIsFocus(false);
             }}
           />
+          {flag & !value ? (
+            <Text style={{color: 'red'}}>Please select Color </Text>
+          ) : (
+            <></>
+          )}
           <Button
             mode="contained"
             color="#506F86"
             style={button.layout}
             labelStyle={button.label}
-            onPress={() =>
-              [insert(), props.navigation.navigate('Todo')]
-            }>
+            onPress={() => [validate()]}>
             Add
           </Button>
           {/* <Button
@@ -128,7 +129,7 @@ const Category = props => {
               marginTop: 10,
               borderWidth: 1,
             }}
-            onPress={()=>[clearCateg,props.navigation.navigate('Todo')]}
+            onPress={()=>[clearCateg(),props.navigation.navigate('Todo')]}
             >clear</Button> */}
         </View>
       </LinearGradient>
@@ -136,5 +137,3 @@ const Category = props => {
   );
 };
 export default Category;
-
-

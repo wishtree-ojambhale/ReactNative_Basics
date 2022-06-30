@@ -32,9 +32,8 @@ const homeCss = StyleSheet.create({
     color: '#FBB040',
     fontWeight: '700',
     flex: 1,
-    alignSelf:'center',
-    textAlignVertical:'center'
-  
+    alignSelf: 'center',
+    textAlignVertical: 'center',
   },
 
   task: {
@@ -52,7 +51,7 @@ const homeCss = StyleSheet.create({
     color: 'white',
   },
   buttons: {
-    alignContent: 'flex-start',
+    paddingLeft: 10,
     flexWrap: 'wrap',
     flexDirection: 'row',
     marginBottom: 10,
